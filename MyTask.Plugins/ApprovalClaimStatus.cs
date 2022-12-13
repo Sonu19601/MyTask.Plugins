@@ -35,10 +35,10 @@ namespace MyTask.Plugins
 
                 if (approvals.Entities.Count > 0)
                 {
-                    int count = ApprovalStatusCount(approvals);
+                    int count = Methods.ApprovalStatusCount(approvals);
                     Trace.Trace("Accepted and Rejected approvals found");
 
-                    StatePair statePair = GetApprovalStatus(count, approvals.Entities.Count);
+                    StatePair statePair = Methods.GetApprovalStatus(count, approvals.Entities.Count);
                     Trace.Trace("Status Found Succesfully");
 
                     Entity parentClaim = new Entity(Claim.ENTITYNAME)
@@ -58,47 +58,7 @@ namespace MyTask.Plugins
             }
             
         }
-        public static  StatePair GetApprovalStatus(int count, int claimsCount)
-        {
-            StatePair temp;
-            if (count == claimsCount)
-            {
-                temp.stateCode = Claim.STATE_ACTIVE;
-                temp.statusCode = Claim.STATUS_ACCEPTED;
-                return temp;
-            }
-            else if (count >= 100 )
-            {
-                temp.statusCode= Claim.STATUS_REJECTED;
-                temp.stateCode = Claim.STATE_INACTIVE;
-                return temp;
-            }
-            else if (count < 3)
-            {
-                temp.statusCode= Claim.STATUS_REVIEW;
-                temp.stateCode = Claim.STATE_ACTIVE;
-                return temp;
-            }
-            throw new NotSupportedException("Not supported.");
-        }
-        
-        public static int ApprovalStatusCount(EntityCollection approvals)
-        {
-            //var rejected = claims.Entities.Any(x => x.GetAttributeValue<OptionSetValue>("statuscode").Value==778390000);
-            int result = 0;
-            foreach (var v in approvals.Entities)
-            {
-                if (((OptionSetValue)v.Attributes[Approval.Fields.STATUSCODE]).Value == Approval.STATUS_ACCEPTED)
-                {
-                    result++;
-                }
-                else if (((OptionSetValue)v.Attributes[Approval.Fields.STATUSCODE]).Value == Approval.STATUS_REJECTED)
-                {
-                    result = 100;
-                }
-            }
-            return result;
-        }
+       
     }
 }
 

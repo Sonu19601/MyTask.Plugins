@@ -32,6 +32,7 @@ namespace MyTask.Plugins
                 parentState.stateCode = Approval.STATE_ACTIVE;
                 parentState.statusCode = Approval.STATUS_DRAFT;
                 ParentApprovalSetter(service, approvalId, parentState);
+                context.OutputParameters["Alert"] = "Approval Activated";
             }
             else if (flag == 1)
             {
@@ -40,6 +41,7 @@ namespace MyTask.Plugins
                 StateSetter(service, approvalId, statePair,Trace);
 
                 ParentApprovalSetter(service, approvalId, statePair);
+                context.OutputParameters["Alert"] = "Approval Rejected";
             }
 
         }
@@ -94,8 +96,8 @@ namespace MyTask.Plugins
 
             if (approvals.Entities.Count > 0)
             {
-                int count =ApprovalClaimStatus.ApprovalStatusCount(approvals);
-                StatePair statePair = ApprovalClaimStatus.GetApprovalStatus(count, approvals.Entities.Count);
+                int count =Methods.ApprovalStatusCount(approvals);
+                StatePair statePair = Methods.GetApprovalStatus(count, approvals.Entities.Count);
                 Entity parentClaim = new Entity(Claim.ENTITYNAME)
                 {
                     Id = claim.Id,

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xrm.Sdk;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -57,7 +58,7 @@ namespace MyTask.Constants
     public class SystemUsers
     {
         public const string ENTITYNAME = "systemuser";
-        public const string SALES_AGENTS = "7e6eaddc-eb63-ed11-9562-000d3ac9bb62";
+        public static Guid SALES_AGENTS =  new Guid("7e6eaddc-eb63-ed11-9562-000d3ac9bb62");
 
         public class Fields
         {
@@ -94,5 +95,51 @@ namespace MyTask.Constants
 
 
     public struct StatePair { public int stateCode; public int statusCode; }
+    public class Methods
+    {
+
+        public static StatePair GetApprovalStatus(int count, int claimsCount)
+        {
+            StatePair statePair;
+            if (count == claimsCount)
+            {
+                statePair.stateCode = Claim.STATE_ACTIVE;
+                statePair.statusCode = Claim.STATUS_ACCEPTED;
+            }
+            else if (count >= 100)
+            {
+                statePair.statusCode = Claim.STATUS_REJECTED;
+                statePair.stateCode = Claim.STATE_INACTIVE;
+            }
+            else if (count < 3)
+            {
+                statePair.statusCode = Claim.STATUS_REVIEW;
+                statePair.stateCode = Claim.STATE_ACTIVE;
+            }
+            else
+            {
+                throw new NotSupportedException("Not supported.");
+            }
+            return statePair;
+        }
+
+        public static int ApprovalStatusCount(EntityCollection approvals)
+        {
+            //var rejected = claims.Entities.Any(x => x.GetAttributeValue<OptionSetValue>("statuscode").Value==778390000);
+            int result = 0;
+            foreach (var v in approvals.Entities)
+            {
+                if (((OptionSetValue)v.Attributes[Approval.Fields.STATUSCODE]).Value == Approval.STATUS_ACCEPTED)
+                {
+                    result++;
+                }
+                else if (((OptionSetValue)v.Attributes[Approval.Fields.STATUSCODE]).Value == Approval.STATUS_REJECTED)
+                {
+                    result = 100;
+                }
+            }
+            return result;
+        }
+    }
 
 }

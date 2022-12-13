@@ -23,7 +23,6 @@ namespace MyTask.Plugins
             Entity contact = context.InputParameters["Target"] as Entity;
             if (((OptionSetValue)contact.Attributes[Contacts.Fields.STATUSCODE]).Value==1)
             {
-
                 QueryExpression agentsQuery = new QueryExpression(SystemUsers.ENTITYNAME);
                 agentsQuery.Criteria.AddCondition(SystemUsers.Fields.POSITION_ID, ConditionOperator.Equal, SystemUsers.SALES_AGENTS);
                 agentsQuery.ColumnSet = new ColumnSet(true);

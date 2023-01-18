@@ -31,7 +31,7 @@ namespace MyTask.Plugins
 
                 parentState.stateCode = Approval.STATE_ACTIVE;
                 parentState.statusCode = Approval.STATUS_DRAFT;
-                ParentApprovalSetter(service, approvalId, parentState);
+                ParentApprovalSetter(service, approvalId, parentState,Trace);
                 context.OutputParameters["Alert"] = "Approval Activated";
             }
             else if (flag == 1)
@@ -40,19 +40,20 @@ namespace MyTask.Plugins
                 statePair.statusCode = Approval.STATUS_REJECTED;               
                 StateSetter(service, approvalId, statePair,Trace);
 
-                ParentApprovalSetter(service, approvalId, statePair);
+                ParentApprovalSetter(service, approvalId, statePair,Trace);
                 context.OutputParameters["Alert"] = "Approval Rejected";
             }
 
         }
 
-        private void ParentApprovalSetter(IOrganizationService service, string approvalId, StatePair parentState)
+        private void ParentApprovalSetter(IOrganizationService service, string approvalId, StatePair parentState,ITracingService Trace)
         {
             Entity approval = service.Retrieve(Approval.ENTITYNAME, new Guid(approvalId), new ColumnSet(true));
             EntityReference claim = approval.GetAttributeValue<EntityReference>(Approval.Fields.CLAIM_ID);
             EntityReference userRef = approval.GetAttributeValue<EntityReference>(Approval.Fields.ASSIGNED_AGENT);
             Entity user = service.Retrieve(SystemUsers.ENTITYNAME, userRef.Id, new ColumnSet(true));
             EntityReference parentUser = user.GetAttributeValue<EntityReference>(SystemUsers.Fields.PARENT_USER);
+            Trace.Trace("retrived credentials");
 
             QueryExpression query = new QueryExpression(Approval.ENTITYNAME);
             query.Criteria.AddCondition(Approval.Fields.CLAIM_ID, ConditionOperator.Equal, claim.Id);
@@ -60,13 +61,22 @@ namespace MyTask.Plugins
             {
                 query.Criteria.AddCondition(Approval.Fields.ASSIGNED_AGENT, ConditionOperator.Equal, parentUser.Id);
             }
-            EntityCollection approvals = service.RetrieveMultiple(query);
-            foreach(var record in approvals.Entities)
-            {
-                record[Approval.Fields.STATECODE] = new OptionSetValue(parentState.stateCode);
-                record[Approval.Fields.STATUSCODE] = new OptionSetValue(parentState.statusCode);
-                service.Update(record);
+            var approvals = service.RetrieveMultiple(query);
+            Trace.Trace("approvals found");
 
+            if (approvals.Entities.Count == 0)
+            {
+                Trace.Trace("all approvals accepted");
+            }
+            else
+            {
+                foreach (var record in approvals.Entities)
+                {
+                    record[Approval.Fields.STATECODE] = new OptionSetValue(parentState.stateCode);
+                    record[Approval.Fields.STATUSCODE] = new OptionSetValue(parentState.statusCode);
+                    service.Update(record);
+
+                }
             }
         }
 
@@ -105,7 +115,7 @@ namespace MyTask.Plugins
                     [Claim.Fields.STATECODE] = new OptionSetValue(statePair.stateCode)
 
                 };
-                Trace.Trace("Updating Approval realtion");
+                Trace.Trace("Updating Approval relation");
                 service.Update(parentClaim);
                 
                 Trace.Trace(" Approval complete");

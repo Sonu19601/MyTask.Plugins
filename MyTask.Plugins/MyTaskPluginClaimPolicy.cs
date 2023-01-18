@@ -20,6 +20,7 @@ namespace MyTask.Plugins
             try
             {
                 Entity claim = context.InputParameters["Target"] as Entity;
+                var updateClaim = new Entity(Claim.ENTITYNAME, claim.Id);
                 EntityReference policyReference = claim.GetAttributeValue<EntityReference>(Claim.Fields.POLICY_ID);
 
                 Entity policy = service.Retrieve(Policy.ENTITYNAME, policyReference.Id, new Microsoft.Xrm.Sdk.Query.ColumnSet(true));
@@ -27,26 +28,30 @@ namespace MyTask.Plugins
 
                 double policyAmount = Convert.ToDouble(policy[Policy.Fields.POlICY_AMOUNT]),
                        claimAmount = Convert.ToDouble(claim[Claim.Fields.CLAIM_AMOUNT]);
-                double Percent=(claimAmount/ policyAmount) *100;
+                double Percent = (claimAmount / policyAmount) * 100;
+               
 
-                claim[Claim.Fields.CUSTOMER_ID] = customer;
-                claim[Claim.Fields.CLAIM_PERCENTAGE] = Percent;
-                service.Update(claim);
+                    updateClaim[Claim.Fields.CUSTOMER_ID] = customer;
+                    updateClaim[Claim.Fields.CLAIM_PERCENTAGE] = Percent;
+                    service.Update(updateClaim);
 
-                ApprovalRecord(context, service, Trace);
+                    ApprovalRecord(context, service, Trace, customer, Percent);
+                
+                
             }
-            catch(Exception e)
+
+            catch (Exception e)
             {
                 Trace.Trace(e.Message);
             }
         }
 
-        public void ApprovalRecord(IPluginExecutionContext context, IOrganizationService service, ITracingService trace)
+        public void ApprovalRecord(IPluginExecutionContext context, IOrganizationService service, ITracingService trace,EntityReference customer,double claimPercentage)
         {
             try
             {
                 Entity claim = context.InputParameters["Target"] as Entity;
-                EntityReference customer = claim.GetAttributeValue<EntityReference>(Claim.Fields.CUSTOMER_ID);
+                //EntityReference customer = claim.GetAttributeValue<EntityReference>(Claim.Fields.CUSTOMER_ID);
                 Entity Contact = service.Retrieve(Contacts.ENTITYNAME, customer.Id, new Microsoft.Xrm.Sdk.Query.ColumnSet(true));
                 trace.Trace("one scrum");
 
@@ -54,9 +59,10 @@ namespace MyTask.Plugins
                 Entity user = service.Retrieve(SystemUsers.ENTITYNAME, userRefernce.Id, new Microsoft.Xrm.Sdk.Query.ColumnSet(true));
                 trace.Trace("two scrum");
 
-                double claimPercentage = claim.GetAttributeValue<double>(Claim.Fields.CLAIM_PERCENTAGE);
+                //double claimPercentage = claim.GetAttributeValue<double>(Claim.Fields.CLAIM_PERCENTAGE);
                 Entity approval = ApprovalStatus(claim, userRefernce, Approval.STATUS_DRAFT);
                 trace.Trace("three scrum");
+                trace.Trace(claimPercentage.ToString());
 
                 if (claimPercentage < 25)
                 {
@@ -80,9 +86,11 @@ namespace MyTask.Plugins
                     Entity approvalManager = ApprovalStatus(claim, managerRef, Approval.STATUS_REVIEW);
                     Entity approvalSenior = ApprovalStatus(claim, seniorRef, Approval.STATUS_REVIEW);
 
+                    trace.Trace("operation begins");
                     service.Create(approval);
                     service.Create(approvalManager);
                     service.Create(approvalSenior);
+                    trace.Trace("operation ends");
                 }
             }catch(Exception e)
             {

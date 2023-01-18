@@ -96,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApprovalClaimStatus.cs" />
+    <Compile Include="ContactPrevalidation.cs" />
     <Compile Include="OptionalActionApproval.cs" />
     <Compile Include="ContactUserScheduler.cs" />
     <Compile Include="MyTaskPolicyInterest.cs" />

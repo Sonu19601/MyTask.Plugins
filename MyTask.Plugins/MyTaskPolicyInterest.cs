@@ -13,6 +13,7 @@ namespace MyTask.Plugins
         public void Execute(IServiceProvider serviceProvider)
         {
             IPluginExecutionContext context = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));
+            IPluginExecutionContext3 portalContext = (IPluginExecutionContext3)serviceProvider.GetService(typeof(IPluginExecutionContext3));
             IOrganizationServiceFactory factory = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
             ITracingService Trace = (ITracingService)serviceProvider.GetService(typeof(ITracingService));
             IOrganizationService service = factory.CreateOrganizationService(context.UserId);
@@ -20,6 +21,7 @@ namespace MyTask.Plugins
             {
                 Trace.Trace("Execution Start");
                 Entity policy = context.InputParameters["Target"] as Entity;
+                Entity updatePolicy = new Entity(Policy.ENTITYNAME, policy.Id);
                 DateTime DT1 = policy.GetAttributeValue<DateTime>(Policy.Fields.START_DATE);
                 DateTime DT2 = policy.GetAttributeValue<DateTime>(Policy.Fields.END_DATE);
                 int Year = DT2.Year - DT1.Year;
@@ -33,8 +35,8 @@ namespace MyTask.Plugins
                 {
                     if (Year >= policyMaster.GetAttributeValue<int>(PolicyMaster.Fields.START_DATE) && Year <= policyMaster.GetAttributeValue<int>(PolicyMaster.Fields.END_DATE))
                     {
-                        policy[Policy.Fields.POLICY_INTEREST] = policyMaster.GetAttributeValue<int>(PolicyMaster.Fields.INTEREST);
-                        service.Update(policy);
+                        updatePolicy[Policy.Fields.POLICY_INTEREST] = policyMaster.GetAttributeValue<int>(PolicyMaster.Fields.INTEREST);
+                        service.Update(updatePolicy);
                         break;
                     }
 

@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyTask.Plugins", "MyTask.Pl
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "MyTask.Constants", "MyTask.Constants\MyTask.Constants.shproj", "{E24E54A2-8D11-4D68-BA11-03692A465085}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzurePlugin", "C:\Users\sonupaul\source\repos\AzurePlugin\AzurePlugin\AzurePlugin.csproj", "{8F098731-EAEA-4F10-93D4-AEEC969A7754}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		MyTask.Constants\MyTask.Constants.projitems*{97576c67-85a2-4833-8c9f-2de20ef3ae9b}*SharedItemsImports = 4
@@ -21,6 +23,10 @@ Global
 		{97576C67-85A2-4833-8C9F-2DE20EF3AE9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97576C67-85A2-4833-8C9F-2DE20EF3AE9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97576C67-85A2-4833-8C9F-2DE20EF3AE9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F098731-EAEA-4F10-93D4-AEEC969A7754}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F098731-EAEA-4F10-93D4-AEEC969A7754}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F098731-EAEA-4F10-93D4-AEEC969A7754}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F098731-EAEA-4F10-93D4-AEEC969A7754}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

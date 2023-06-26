@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.32901.82
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyTask.Plugins", "MyTask.Plugins\MyTask.Plugins.csproj", "{97576C67-85A2-4833-8C9F-2DE20EF3AE9B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8F098731-EAEA-4F10-93D4-AEEC969A7754} = {8F098731-EAEA-4F10-93D4-AEEC969A7754}
+	EndProjectSection
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "MyTask.Constants", "MyTask.Constants\MyTask.Constants.shproj", "{E24E54A2-8D11-4D68-BA11-03692A465085}"
 EndProject

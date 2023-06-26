@@ -109,6 +109,9 @@
     <None Include="packages.config" />
     <None Include="sonu.snk" />
   </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="Mytask.Scripts.ts" />
+  </ItemGroup>
   <Import Project="..\MyTask.Constants\MyTask.Constants.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Text.Json.6.0.2\build\System.Text.Json.targets" Condition="Exists('..\packages\System.Text.Json.6.0.2\build\System.Text.Json.targets')" />
